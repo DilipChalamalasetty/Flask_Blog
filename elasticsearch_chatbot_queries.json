@@ -1,0 +1,290 @@
+#MAPPING AND SETTINGS FOR INDEX
+
+
+PUT akn_test1
+{
+  "settings": {
+    "analysis": {
+      "filter": {
+        "english_stemmer": {
+          "type": "stemmer",
+          "language": "english"
+        },
+        "english_stop": {
+          "type": "stop",
+          "stopwords": "_english_"
+        },
+        "synonym": {
+          "format": "wordnet",
+          "type": "synonym",
+          "synonyms_path": "analysis/wn_s.pl.txt",
+          "lenient": "true"
+        }
+      },
+      "analyzer": {
+        "synonym": {
+          "filter": [
+            "english_stop",
+            "english_stemmer",
+            "synonym",
+            "lowercase"
+          ],
+          "tokenizer": "standard"
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "answer": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        },
+        "analyzer": "synonym"
+      },
+      "category": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        },
+        "analyzer": "standard"
+      },
+      "id": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "questions": {
+        "type": "nested",
+        "properties": {
+          "qus": {
+            "type": "search_as_you_type",
+            "analyzer": "synonym"
+          }
+        }
+      },
+      "source": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "url": {
+        "properties": {
+          "subtitle": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "thumbnail": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "title": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "url": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
+#INDEXING DOCUMENTS
+
+POST _bulk
+file content
+
+
+#SEARCHING QUERY
+
+
+GET akn_test1/_search
+{
+   
+  "_source": "answer", 
+  "query": {
+    "nested": {
+      "path": "questions",
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "match": {
+                "questions.qus": "any problem using pirated software?"
+              }
+            },
+            {
+              "more_like_this": {
+                "fields": [
+                  "questions.qus"
+                ],
+                "like": "any problem using pirated software?",
+                "min_term_freq": 1
+              }
+            }
+          ]
+        }
+      },
+      "inner_hits": {
+          "size": 1
+      }
+    }
+  }
+}
+"questions.qus._3gram"
+
+GET akn_test1/_search
+{
+   
+  "_source": "answer", 
+  "query": {
+    "nested": {
+      "path": "questions",
+      "query": {
+        "bool": {
+          "must":{
+            "multi_match": {
+
+              "query": "sofware travelling",
+    
+              "type": "bool_prefix",
+    
+              "fields": [
+    
+                "questions",
+    
+                "questions._2gram",
+    
+                "questions._3gram"
+    
+              ],
+    
+              "fuzziness": "AUTO"
+    
+            }
+          }
+        }
+      },
+      "inner_hits": {
+          "size": 1
+      }
+    }
+  }
+}
+
+
+GET akn_kb1/_search
+
+{
+
+  "query": {
+
+    "bool": {
+
+      "must": {
+
+        "multi_match": {
+
+          "query": "sofware travelling",
+
+          "type": "bool_prefix",
+
+          "fields": [
+
+            "questions",
+
+            "questions._2gram",
+
+            "questions._3gram"
+
+          ],
+
+          "fuzziness": "AUTO"
+
+        }
+
+      },
+
+      "filter": {
+
+        "term": {
+
+          "category.keyword": "FAQ_Software Piracy"
+
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
+
+
+
+
+
+COST OF NESTED INDEXING
+    1.DOCUMENT COUNT INCREASING DUE TO HIDDEN DOCUMENTS.
+    2.BUT THERE IS NO DIFFERENCE IN OCCUPIED SIZE.
+        A. THIS IS ANALYZED BY USING THE DATA WHEN WE USE
+            GET _cat/indices  (query)
+
+            OUTPUT OF THE QUERY
+
+                        index_name                                       dcoun   size
+            yellow open akn_test1            _gYDNSncQYKBMrPfUzsyfA 1 1   20 0  59.3kb  59.3kb
+            yellow open akn_test2            HoUeSltBSxWA4nY2Ar-c2g 1 1    5 0  58.7kb  58.7kb
+
+
+                here 
+                index_name :specifies the name of the index
+                dcoun       : species the documents count
+                size        :specifies the disk space
+
+            akn_test1 : it is indexed by 5 DOCUMENTS using nested data type for "questions" key   (in this case the document count increases bu there is no size difference)
+            akn_test2 : it is indexed by 5 DOCUMENTS using text(array) data type for "questions" key
