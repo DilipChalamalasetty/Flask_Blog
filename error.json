@@ -1,0 +1,67 @@
+{
+
+  "error": {
+
+    "root_cause": [
+
+      {
+
+        "type": "query_shard_exception",
+
+        "reason": "failed to create query: {\n  \"bool\" : {\n    \"must\" : [\n      {\n        \"multi_match\" : {\n          \"query\" : \"how can i purchase this product?\",\n          \"fields\" : [\n            \"questions^1.0\",\n            \"questions._2gram^1.0\",\n            \"questions._3gram^1.0\"\n          ],\n          \"type\" : \"bool_prefix\",\n          \"operator\" : \"OR\",\n          \"slop\" : 0,\n          \"fuzziness\" : \"AUTO\",\n          \"prefix_length\" : 0,\n          \"max_expansions\" : 50,\n          \"zero_terms_query\" : \"NONE\",\n          \"auto_generate_synonyms_phrase_query\" : true,\n          \"fuzzy_transpositions\" : true,\n          \"boost\" : 1.0\n        }\n      }\n    ],\n    \"adjust_pure_negative\" : true,\n    \"boost\" : 1.0\n  }\n}",
+
+        "index_uuid": "i-kO6dt9TSuiFH09f31bPA",
+
+        "index": "akn_kb3"
+
+      }
+
+    ],
+
+    "type": "search_phase_execution_exception",
+
+    "reason": "all shards failed",
+
+    "phase": "query",
+
+    "grouped": true,
+
+    "failed_shards": [
+
+      {
+
+        "shard": 0,
+
+        "index": "akn_kb3",
+
+        "node": "hnv0kbV0Q0CsUEbyMpex0Q",
+
+        "reason": {
+
+          "type": "query_shard_exception",
+
+          "reason": "failed to create query: {\n  \"bool\" : {\n    \"must\" : [\n      {\n        \"multi_match\" : {\n          \"query\" : \"how can i purchase this product?\",\n          \"fields\" : [\n            \"questions^1.0\",\n            \"questions._2gram^1.0\",\n            \"questions._3gram^1.0\"\n          ],\n          \"type\" : \"bool_prefix\",\n          \"operator\" : \"OR\",\n          \"slop\" : 0,\n          \"fuzziness\" : \"AUTO\",\n          \"prefix_length\" : 0,\n          \"max_expansions\" : 50,\n          \"zero_terms_query\" : \"NONE\",\n          \"auto_generate_synonyms_phrase_query\" : true,\n          \"fuzzy_transpositions\" : true,\n          \"boost\" : 1.0\n        }\n      }\n    ],\n    \"adjust_pure_negative\" : true,\n    \"boost\" : 1.0\n  }\n}",
+
+          "index_uuid": "i-kO6dt9TSuiFH09f31bPA",
+
+          "index": "akn_kb3",
+
+          "caused_by": {
+
+            "type": "too_many_clauses",
+
+            "reason": "maxClauseCount is set to 1024"
+
+          }
+
+        }
+
+      }
+
+    ]
+
+  },
+
+  "status": 400
+
+}

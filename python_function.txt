@@ -1,0 +1,21 @@
+issubclass()
+
+__mro__    (method resolution attribute)
+
+mro()
+
+property()  //used for fitting getter and setter functions to private variables
+
+os module
+
+with (context manager)
+
+flush() //this will storee the program data into operating system buffer when power loss
+
+try and finally
+
+slice()
+
+operator overloading
+
+
