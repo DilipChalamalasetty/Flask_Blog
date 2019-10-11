@@ -1,0 +1,13 @@
+Application Factory
+instance folder
+
+
+
+only with search_as_you_type:
+yellow open akn_kb3              IVtWTVXFSFmnEgu8nZMb2A 1 1  127 0 244.2kb 244.2kb
+
+with search_as_you_type and edge_ngram
+yellow open akn_kb3              W0oIzb3KQrS98wK1PTCIrw 1 1  127 0   2.8mb   2.8mb
+
+with search_as_you_type,edge_ngram and synonym
+yellow open akn_kb3              OhPehMBsTqmdsI9NUdxDCQ 1 1  127 0   3.4mb   3.4mb
